@@ -61,12 +61,13 @@ var renderCloud = function (ctx, points) {
 
 var printResultsMessage = function (ctx) {
   var lines = RESULTS_MESSAGE.split('\n');
+  var lineX = CLOUD_COORDINATES[0] + CLOUD_PADDING_LEFT;
+  var lineY;
+
   ctx.font = RESULTS_FONT;
   ctx.fillStyle = '#000';
   ctx.textBaseline = 'top';
-
-  for (var lineNumber = 0, lineX, lineY; lineNumber < lines.length; lineNumber++) {
-    lineX = CLOUD_COORDINATES[0] + CLOUD_PADDING_LEFT;
+  for (var lineNumber = 0; lineNumber < lines.length; lineNumber++) {
     lineY = CLOUD_COORDINATES[1] + CLOUD_PADDING_TOP + RESULTS_FONT_OFFSET * lineNumber;
     ctx.fillText(lines[lineNumber], lineX, lineY);
   }
@@ -78,6 +79,7 @@ var drawHistogram = function (ctx, names, times) {
   var barLeftX;
   var barBottomY = CLOUD_COORDINATES[1] + CLOUD_HEIGHT - CLOUD_PADDING_BOTTOM;
   var maxTime = getMaxElement(times);
+  var opacity;
 
   ctx.font = CAPTION_FONT;
 
@@ -89,7 +91,7 @@ var drawHistogram = function (ctx, names, times) {
     if (names[index] === 'Вы') {
       ctx.fillStyle = 'rgba(255, 0, 0, 1)';
     } else {
-      var opacity = Math.random().toFixed(2);
+      opacity = Math.random().toFixed(2);
       ctx.fillStyle = 'rgba(0, 0, 255, ' + opacity + ')';
     }
     ctx.fillRect(barLeftX, barBottomY, BAR_WIDTH, -barHeight);
