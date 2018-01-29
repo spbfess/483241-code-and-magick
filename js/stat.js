@@ -77,7 +77,6 @@ window.renderStatistics = function (ctx, names, times) {
   var maxTime = getMaxElement(times);
 
   ctx.font = CAPTION_FONT;
-  ctx.fillStyle = '#000';
 
   for (var index = 0; index < names.length; index++) {
     barLeftX = CLOUD_COORDINATES[0] + CLOUD_PADDING_LEFT + (BAR_WIDTH + BAR_INTERVAL) * index;
