@@ -65,8 +65,10 @@ var printResultsMessage = function (ctx) {
   ctx.fillStyle = '#000';
   ctx.textBaseline = 'top';
 
-  for (var lineNumber = 0; lineNumber < lines.length; lineNumber++) {
-    ctx.fillText(lines[lineNumber], CLOUD_COORDINATES[0] + CLOUD_PADDING_LEFT, CLOUD_COORDINATES[1] + CLOUD_PADDING_TOP + RESULTS_FONT_OFFSET * lineNumber);
+  for (var lineNumber = 0, lineX, lineY; lineNumber < lines.length; lineNumber++) {
+    lineX = CLOUD_COORDINATES[0] + CLOUD_PADDING_LEFT;
+    lineY = CLOUD_COORDINATES[1] + CLOUD_PADDING_TOP + RESULTS_FONT_OFFSET * lineNumber;
+    ctx.fillText(lines[lineNumber], lineX, lineY);
   }
 };
 
