@@ -2,7 +2,7 @@
 
 var CLOUD_WIDTH = 420;
 var CLOUD_HEIGHT = 270;
-var CLOUD_PADDING_TOP = 5;
+var CLOUD_PADDING_TOP = 15;
 var CLOUD_PADDING_BOTTOM = 30;
 var CLOUD_PADDING_LEFT = 55;
 var CLOUD_COORDINATES = [100, 10];
@@ -12,9 +12,9 @@ var BAR_MAX_HEIGHT = 150;
 var BAR_WIDTH = 40;
 var BAR_INTERVAL = 50;
 var RESULTS_MESSAGE = 'Ура вы победили!\nСписок результатов:';
-var RESULTS_FONT = '30px Tahoma';
-var RESULTS_FONT_OFFSET = 30;
-var CAPTION_FONT = '18px Tahoma';
+var RESULTS_FONT = '16px PT Mono';
+var RESULTS_FONT_OFFSET = 20;
+var CAPTION_FONT = '14px PT Mono';
 var CAPTION_FONT_OFFSET = 5;
 
 var getMaxElement = function (elements) {
