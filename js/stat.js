@@ -25,20 +25,21 @@ var getBarHeight = function (maxResult, currentResult) {
   return BAR_MAX_HEIGHT * currentResult / maxResult;
 };
 
-var renderCloud = function (ctx) {
+var renderCloud = function (ctx, points) {
   ctx.save();
   ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
   ctx.shadowOffsetX = CLOUD_SHADOW_OFFSET;
   ctx.shadowOffsetY = CLOUD_SHADOW_OFFSET;
   ctx.beginPath();
-  ctx.moveTo(CLOUD_COORDINATES[0], CLOUD_COORDINATES[1]); // start
-  ctx.lineTo(CLOUD_COORDINATES[0] + CLOUD_WIDTH / 2, CLOUD_COORDINATES[1] + CLOUD_SLOPE_OFFSET); // halfway to top right
-  ctx.lineTo(CLOUD_COORDINATES[0] + CLOUD_WIDTH, CLOUD_COORDINATES[1]); // top right
-  ctx.lineTo(CLOUD_COORDINATES[0] + CLOUD_WIDTH - CLOUD_SLOPE_OFFSET, CLOUD_COORDINATES[1] + CLOUD_HEIGHT / 2); // halfway to bottom right
-  ctx.lineTo(CLOUD_COORDINATES[0] + CLOUD_WIDTH, CLOUD_COORDINATES[1] + CLOUD_HEIGHT); // bottom right
-  ctx.lineTo(CLOUD_COORDINATES[0] + CLOUD_WIDTH / 2, CLOUD_COORDINATES[1] + CLOUD_HEIGHT - CLOUD_SLOPE_OFFSET); // halfway to bottom left
-  ctx.lineTo(CLOUD_COORDINATES[0], CLOUD_COORDINATES[1] + CLOUD_HEIGHT); // bottom left
-  ctx.lineTo(CLOUD_COORDINATES[0] + CLOUD_SLOPE_OFFSET, CLOUD_COORDINATES[1] + CLOUD_HEIGHT / 2); // halfway to top left
+
+  for (var pointIndex = 0; pointIndex < points.length; pointIndex++) {
+    if (pointIndex === 0) {
+      ctx.moveTo(points[pointIndex][0], points[pointIndex][1]);
+    } else {
+      ctx.lineTo(points[pointIndex][0], points[pointIndex][1]);
+    }
+  }
+
   ctx.closePath();
   ctx.strokeStyle = '#000';
   ctx.stroke();
@@ -48,13 +49,23 @@ var renderCloud = function (ctx) {
 };
 
 window.renderStatistics = function (ctx, names, times) {
-  renderCloud(ctx);
-  ctx.font = RESULTS_FONT;
-  ctx.fillStyle = '#000';
-
+  var cloudPoints = [
+    [CLOUD_COORDINATES[0], CLOUD_COORDINATES[1]],
+    [CLOUD_COORDINATES[0] + CLOUD_WIDTH / 2, CLOUD_COORDINATES[1] + CLOUD_SLOPE_OFFSET],
+    [CLOUD_COORDINATES[0] + CLOUD_WIDTH, CLOUD_COORDINATES[1]],
+    [CLOUD_COORDINATES[0] + CLOUD_WIDTH - CLOUD_SLOPE_OFFSET, CLOUD_COORDINATES[1] + CLOUD_HEIGHT / 2],
+    [CLOUD_COORDINATES[0] + CLOUD_WIDTH, CLOUD_COORDINATES[1] + CLOUD_HEIGHT],
+    [CLOUD_COORDINATES[0] + CLOUD_WIDTH / 2, CLOUD_COORDINATES[1] + CLOUD_HEIGHT - CLOUD_SLOPE_OFFSET],
+    [CLOUD_COORDINATES[0], CLOUD_COORDINATES[1] + CLOUD_HEIGHT],
+    [CLOUD_COORDINATES[0] + CLOUD_SLOPE_OFFSET, CLOUD_COORDINATES[1] + CLOUD_HEIGHT / 2]
+  ];
   var lines = RESULTS_MESSAGE.split('\n');
 
+  renderCloud(ctx, cloudPoints);
+  ctx.font = RESULTS_FONT;
+  ctx.fillStyle = '#000';
   ctx.textBaseline = 'top';
+
   for (var lineNumber = 0; lineNumber < lines.length; lineNumber++) {
     ctx.fillText(lines[lineNumber], CLOUD_COORDINATES[0] + CLOUD_PADDING_LEFT, CLOUD_COORDINATES[1] + CLOUD_PADDING_TOP + RESULTS_FONT_OFFSET * lineNumber);
   }
@@ -67,11 +78,11 @@ window.renderStatistics = function (ctx, names, times) {
 
   ctx.font = CAPTION_FONT;
   ctx.fillStyle = '#000';
+
   for (var index = 0; index < names.length; index++) {
     barLeftX = CLOUD_COORDINATES[0] + CLOUD_PADDING_LEFT + (BAR_WIDTH + BAR_INTERVAL) * index;
     barHeight = Math.round(getBarHeight(maxTime, times[index]));
     barTopY = barBottomY - barHeight;
-
     ctx.save();
 
     if (names[index] === 'Вы') {
@@ -82,7 +93,6 @@ window.renderStatistics = function (ctx, names, times) {
 
     ctx.fillRect(barLeftX, barBottomY, BAR_WIDTH, -barHeight);
     ctx.restore();
-
     ctx.textBaseline = 'bottom';
     ctx.fillText(Math.round(times[index]), barLeftX, barTopY - CAPTION_FONT_OFFSET);
     ctx.textBaseline = 'top';
