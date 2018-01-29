@@ -17,6 +17,17 @@ var RESULTS_FONT_OFFSET = 20;
 var CAPTION_FONT = '14px PT Mono';
 var CAPTION_FONT_OFFSET = 5;
 
+var cloudPoints = [
+  [CLOUD_COORDINATES[0], CLOUD_COORDINATES[1]],
+  [CLOUD_COORDINATES[0] + CLOUD_WIDTH / 2, CLOUD_COORDINATES[1] + CLOUD_SLOPE_OFFSET],
+  [CLOUD_COORDINATES[0] + CLOUD_WIDTH, CLOUD_COORDINATES[1]],
+  [CLOUD_COORDINATES[0] + CLOUD_WIDTH - CLOUD_SLOPE_OFFSET, CLOUD_COORDINATES[1] + CLOUD_HEIGHT / 2],
+  [CLOUD_COORDINATES[0] + CLOUD_WIDTH, CLOUD_COORDINATES[1] + CLOUD_HEIGHT],
+  [CLOUD_COORDINATES[0] + CLOUD_WIDTH / 2, CLOUD_COORDINATES[1] + CLOUD_HEIGHT - CLOUD_SLOPE_OFFSET],
+  [CLOUD_COORDINATES[0], CLOUD_COORDINATES[1] + CLOUD_HEIGHT],
+  [CLOUD_COORDINATES[0] + CLOUD_SLOPE_OFFSET, CLOUD_COORDINATES[1] + CLOUD_HEIGHT / 2]
+];
+
 var getMaxElement = function (elements) {
   return Math.max.apply(null, elements);
 };
@@ -48,20 +59,8 @@ var renderCloud = function (ctx, points) {
   ctx.restore();
 };
 
-window.renderStatistics = function (ctx, names, times) {
-  var cloudPoints = [
-    [CLOUD_COORDINATES[0], CLOUD_COORDINATES[1]],
-    [CLOUD_COORDINATES[0] + CLOUD_WIDTH / 2, CLOUD_COORDINATES[1] + CLOUD_SLOPE_OFFSET],
-    [CLOUD_COORDINATES[0] + CLOUD_WIDTH, CLOUD_COORDINATES[1]],
-    [CLOUD_COORDINATES[0] + CLOUD_WIDTH - CLOUD_SLOPE_OFFSET, CLOUD_COORDINATES[1] + CLOUD_HEIGHT / 2],
-    [CLOUD_COORDINATES[0] + CLOUD_WIDTH, CLOUD_COORDINATES[1] + CLOUD_HEIGHT],
-    [CLOUD_COORDINATES[0] + CLOUD_WIDTH / 2, CLOUD_COORDINATES[1] + CLOUD_HEIGHT - CLOUD_SLOPE_OFFSET],
-    [CLOUD_COORDINATES[0], CLOUD_COORDINATES[1] + CLOUD_HEIGHT],
-    [CLOUD_COORDINATES[0] + CLOUD_SLOPE_OFFSET, CLOUD_COORDINATES[1] + CLOUD_HEIGHT / 2]
-  ];
+var printResultsMessage = function (ctx) {
   var lines = RESULTS_MESSAGE.split('\n');
-
-  renderCloud(ctx, cloudPoints);
   ctx.font = RESULTS_FONT;
   ctx.fillStyle = '#000';
   ctx.textBaseline = 'top';
@@ -69,7 +68,9 @@ window.renderStatistics = function (ctx, names, times) {
   for (var lineNumber = 0; lineNumber < lines.length; lineNumber++) {
     ctx.fillText(lines[lineNumber], CLOUD_COORDINATES[0] + CLOUD_PADDING_LEFT, CLOUD_COORDINATES[1] + CLOUD_PADDING_TOP + RESULTS_FONT_OFFSET * lineNumber);
   }
+};
 
+var drawHistogram = function (ctx, names, times) {
   var barHeight;
   var barTopY;
   var barLeftX;
@@ -83,13 +84,12 @@ window.renderStatistics = function (ctx, names, times) {
     barHeight = Math.round(getBarHeight(maxTime, times[index]));
     barTopY = barBottomY - barHeight;
     ctx.save();
-
     if (names[index] === 'Вы') {
       ctx.fillStyle = 'rgba(255, 0, 0, 1)';
     } else {
-      ctx.fillStyle = 'rgba(0, 0, 255, ' + Math.random().toFixed(2) + ')';
+      var opacity = Math.random().toFixed(2);
+      ctx.fillStyle = 'rgba(0, 0, 255, ' + opacity + ')';
     }
-
     ctx.fillRect(barLeftX, barBottomY, BAR_WIDTH, -barHeight);
     ctx.restore();
     ctx.textBaseline = 'bottom';
@@ -97,4 +97,10 @@ window.renderStatistics = function (ctx, names, times) {
     ctx.textBaseline = 'top';
     ctx.fillText(names[index], barLeftX, barBottomY + CAPTION_FONT_OFFSET);
   }
+};
+
+window.renderStatistics = function (ctx, names, times) {
+  renderCloud(ctx, cloudPoints);
+  printResultsMessage(ctx);
+  drawHistogram(ctx, names, times);
 };
