@@ -6,12 +6,13 @@ var CLOUD_PADDING_TOP = 10;
 var CLOUD_PADDING_BOTTOM = 10;
 var CLOUD_PADDING_LEFT = 40;
 var CLOUD_COORDINATES = [100, 10];
+var CLOUD_SHADOW_OFFSET = 10;
 var BAR_MAX_HEIGHT = 150;
 var BAR_WIDTH = 40;
 var BAR_INTERVAL = 50;
 
 var getMaxElement = function (elements) {
-  return Math.max.apply(null, elements);
+  return Math.max(...elements);
 };
 
 var getBarHeight = function (maxResult, currentResult) {
@@ -19,12 +20,10 @@ var getBarHeight = function (maxResult, currentResult) {
 };
 
 window.renderStatistics = function (ctx, names, times) {
-  var shadowOffset = 10;
-
   ctx.save();
   ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-  ctx.shadowOffsetX = shadowOffset;
-  ctx.shadowOffsetY = shadowOffset;
+  ctx.shadowOffsetX = CLOUD_SHADOW_OFFSET;
+  ctx.shadowOffsetY = CLOUD_SHADOW_OFFSET;
   ctx.fillStyle = '#fff';
   ctx.fillRect(CLOUD_COORDINATES[0], CLOUD_COORDINATES[1], CLOUD_WIDTH, CLOUD_HEIGHT);
   ctx.restore();
@@ -43,7 +42,6 @@ window.renderStatistics = function (ctx, names, times) {
     barHeight = Math.round(getBarHeight(maxTime, times[index]));
     ctx.fillRect(CLOUD_COORDINATES[0] + CLOUD_PADDING_LEFT + (BAR_WIDTH + BAR_INTERVAL) * index, CLOUD_HEIGHT - 30, BAR_WIDTH, -barHeight);
     ctx.restore();
-
     ctx.fillText(names[index], CLOUD_COORDINATES[0] + CLOUD_PADDING_LEFT + (BAR_WIDTH + BAR_INTERVAL) * index, CLOUD_HEIGHT - 10);
   }
 };
