@@ -113,15 +113,18 @@ var renderWizard = function (wizard) {
   return wizardElement;
 };
 
-var fragment = document.createDocumentFragment();
-var wizards = generateWizardsList();
+var fillSetupSimilarList = function () {
+  var fragment = document.createDocumentFragment();
+  var wizards = generateWizardsList();
+
+  for (var i = 0; i < wizards.length; i++) {
+    fragment.appendChild(renderWizard(wizards[i]));
+  }
+
+  setupSimilarListDomObject.appendChild(fragment);
+};
 
 displayObject(userSetupDomObject);
-
-for (var i = 0; i < wizards.length; i++) {
-  fragment.appendChild(renderWizard(wizards[i]));
-}
-
-setupSimilarListDomObject.appendChild(fragment);
+fillSetupSimilarList();
 displayObject(userSetupSimilarDomObject);
 
